@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ProtistCloud — an open platform for exploring protists and genetic sequences.">
+  <meta name="theme-color" content="#087f8c">
+  <title>ProtistCloud — Open Bioinformatics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="ProtistCloud — Home"><span class="brand-mark">P</span><span>Protist<span class="brand-light">Cloud</span><small>Open Bioinformatics</small></span></a>
+  <nav aria-label="Main navigation"><a href="#organisms">Organisms</a><a href="#sequences">Sequences</a><a href="#analysis">New analysis</a></nav>
+  <button class="mode-button" id="modeToggle" type="button">Professional mode: off</button>
+</header>
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="dot"></span> Scientific data in one place</div>
+    <h1>Explore genetic data<br><span>with clarity and confidence.</span></h1>
+    <p>Search for organisms, explore DNA and RNA records, and prepare sequences for further research.</p>
+    <div class="hero-actions"><a class="button primary" href="#organisms">Find an organism <span>→</span></a><a class="button secondary" href="#analysis">Prepare an analysis</a></div>
+    <p class="notice"><strong>Note:</strong> scientific record search uses the public NCBI service. Sequence analysis is not run yet.</p>
+  </div>
+  <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="cell"><div class="cell-core"></div><div class="cell-dot dot-a"></div><div class="cell-dot dot-b"></div><div class="cell-dot dot-c"></div><div class="cell-line"></div></div><div class="float-card card-sequence"><span>DNA / RNA</span><b>ATG · CCA · GTT</b><small>Sequences</small></div><div class="float-card card-data"><span class="mini-icon">⌘</span><b>Scientific data</b><small>Links to original sources</small></div></div>
+</section>
+
+<section class="section" id="organisms">
+  <div class="section-heading"><div><div class="eyebrow">Open database</div><h2>Organism search</h2></div><span class="section-tag">No registration required</span></div>
+  <form class="search-panel" id="organismSearch">
+    <label for="organismQuery">Scientific name, common name, or group</label>
+    <div class="search-row"><input id="organismQuery" type="search" placeholder="For example, Paramecium caudatum" autocomplete="off" required><button class="button primary" id="searchButton" type="submit">Search NCBI</button></div>
+    <p class="field-help">Searches the public NCBI Taxonomy database. Your query is sent to NCBI; this does not run sequence analysis.</p>
+  </form>
+  <div class="status-line" id="searchStatus" aria-live="polite">Enter an organism name and select “Search NCBI”.</div>
+  <div class="organism-grid" id="organismResults"></div>
+  <div class="empty-state" id="emptyState" hidden>No records found. Try a scientific name or a shorter query.</div>
+  <div class="detail-panel" id="organismDetail" hidden><button class="close-button" id="closeDetail" type="button" aria-label="Close record">×</button><div class="eyebrow">Taxon record · NCBI data</div><h3 id="detailTitle">Organism</h3><p class="latin" id="detailLatin"></p><div class="detail-grid" id="detailGrid"></div><p class="detail-actions" id="detailActions"></p><div class="sequence-results"><div class="section-heading compact"><div><div class="eyebrow">Nucleotide records</div><h3>Sequences for this organism</h3></div><button class="button secondary" id="loadSequences" type="button">Find records</button></div><p class="field-help">Records are retrieved from NCBI Nucleotide. This is database browsing, not similarity analysis.</p><div id="sequenceStatus" class="status-line"></div><div id="sequenceResults"></div></div></div>
+</section>
+
+<section class="section sequence-section" id="sequences">
+  <div class="section-heading"><div><div class="eyebrow">Genetic data</div><h2>Working with sequences</h2></div><span class="section-tag">FASTA</span></div>
+  <div class="sequence-layout">
+    <div class="sequence-copy"><h3>From record to research</h3><p>Future updates will add full sequence viewing, source verification, FASTA downloads, and the ability to send selected data to analysis tools.</p><ul class="check-list"><li>DNA and RNA from open databases</li><li>View scientific descriptions and accession numbers</li><li>Prepare a sequence for comparison</li><li>Open the original source</li></ul></div>
+    <div class="sequence-preview"><div class="preview-head"><span class="file-icon">≋</span><div><b>FASTA file check</b><small>Locally in your browser</small></div><span class="pill">FASTA</span></div><label for="fastaFile">Choose a FASTA file</label><input id="fastaFile" type="file" accept=".fa,.fasta,.fna,.ffn,.faa,.frn,.txt"><div id="fastaStatus" class="fasta-status" aria-live="polite">No file selected. The file is not uploaded to a server.</div><button class="button secondary full" id="inspectFasta" type="button">Check file</button><pre id="fastaPreview" hidden></pre><p class="preview-warning">Format checking is not scientific analysis. Your file stays in your browser.</p></div>
+  </div>
+</section>
+
+<section class="section analysis-section" id="analysis">
+  <div class="section-heading"><div><div class="eyebrow">Workspace</div><h2>Prepare a new analysis</h2></div><span class="section-tag">Computations are disabled</span></div>
+  <form class="analysis-form" id="analysisForm">
+    <div class="form-intro"><span class="step-number">01</span><div><h3>Provide input data</h3><p>Choose one of three methods. No data is sent anywhere at this stage.</p></div></div>
+    <div class="input-tabs" role="group" aria-label="Input method"><button type="button" class="tab active" data-tab="paste">Paste a sequence</button><button type="button" class="tab" data-tab="file">Choose a FASTA file</button><button type="button" class="tab" data-tab="accession">Scientific record accession</button></div>
+    <div class="tab-content" id="pastePane"><label for="sequenceInput">DNA, RNA, or protein sequence</label><textarea id="sequenceInput" rows="4" placeholder="Paste your sequence here…"></textarea><p class="field-help">Sequence letters are accepted; validation will be added separately.</p></div>
+    <div class="tab-content" id="filePane" hidden><label for="analysisFile">FASTA file</label><input id="analysisFile" type="file" accept=".fa,.fasta,.fna,.ffn,.faa,.frn,.txt"><p class="field-help">The file is selected in your browser only; it is not uploaded to a server.</p></div>
+    <div class="tab-content" id="accessionPane" hidden><label for="accessionInput">Accession number from NCBI or another database</label><input id="accessionInput" placeholder="Enter a scientific record accession"></div>
+    <div class="form-divider"></div><div class="form-intro"><span class="step-number">02</span><div><h3>Future analysis settings</h3><p>These settings are currently kept on screen only.</p></div></div>
+    <div class="form-grid"><div><label for="dbSelect">Database</label><select id="dbSelect"><option value="all">All available databases</option><option value="protists">Protist data</option><option value="custom">Custom file</option></select></div><div><label for="organismSelect">Organism group</label><select id="organismSelect"><option value="all">All organisms</option><option value="protists">Protists only</option><option value="bacteria">Bacteria only</option><option value="viruses">Viruses only</option></select></div><div><label for="limitSelect">Maximum results</label><select id="limitSelect"><option>50</option><option>100</option><option selected>500</option></select></div><div><label for="modeSelect">Interface mode</label><select id="modeSelect"><option>Simple — with guidance</option><option>Professional</option></select></div></div>
+    <button class="button primary" type="submit">Review settings <span>→</span></button><div class="form-status" id="formStatus" aria-live="polite" hidden></div><p class="notice"><strong>Important:</strong> this button checks whether the form is filled in. It does not run BLAST or any other computation.</p>
+  </form>
+</section>
+<section class="feature-row"><div><span class="feature-icon">↗</span><b>Open access</b><p>No account required</p></div><div><span class="feature-icon">⌕</span><b>Scientific sources</b><p>Links to primary records</p></div><div><span class="feature-icon">◷</span><b>Clear limitations</b><p>Clear status messages and warnings</p></div></section>
+</main>
+<footer><a class="brand footer-brand" href="#"><span class="brand-mark">P</span><span>ProtistCloud<small>Project in development</small></span></a><p>Open scientific records are provided by external sources. ProtistCloud is not an official NCBI service.</p><span>© ProtistCloud · First working version</span></footer>
+<script src="script.js"></script>
+</body></html>
