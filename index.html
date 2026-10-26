@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="ProtistCloud — an open platform for exploring protists and genetic sequences.">
   <meta name="theme-color" content="#087f8c">
-  <title>ProtistCloud — Open Bioinformatics</title>
+  <title>ProtistCloud — Open Protist Research Workspace</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topbar">
   <a class="brand" href="#" aria-label="ProtistCloud — Home"><span class="brand-mark">P</span><span>Protist<span class="brand-light">Cloud</span><small>Open Bioinformatics</small></span></a>
-  <nav aria-label="Main navigation"><a href="#organisms">Organisms</a><a href="#sequences">Sequences</a><a href="#analysis">New analysis</a></nav>
-  <button class="mode-button" id="modeToggle" type="button">Professional mode: off</button>
+  <nav aria-label="Main navigation"><a href="#organisms">Organisms</a><a href="#record-explorer">Molecular data</a><a href="#image-explorer">Images</a><a href="#analysis">Workspace</a></nav>
+  <button class="mode-button" id="modeToggle" type="button">Light academic mode</button>
 </header>
 <main>
 <section class="hero">
   <div class="hero-copy">
-    <div class="eyebrow"><span class="dot"></span> Scientific data in one place</div>
-    <h1>Explore genetic data<br><span>with clarity and confidence.</span></h1>
-    <p>Search for organisms, explore DNA and RNA records, and prepare sequences for further research.</p>
-    <div class="hero-actions"><a class="button primary" href="#organisms">Find an organism <span>→</span></a><a class="button secondary" href="#analysis">Prepare an analysis</a></div>
+    <div class="eyebrow"><span class="dot"></span> OPEN SCIENCE FOR MICROSCOPIC LIFE</div>
+    <h1>Explore the hidden<br><span>world of protists.</span></h1>
+    <p>Discover organisms, browse molecular records, explore scientific literature, and organize your own research collection.</p>
+    <div class="hero-actions"><a class="button primary" href="#organisms">Find an organism <span>→</span></a><a class="button secondary" href="#record-explorer">Explore records</a></div>
     <p class="notice"><strong>Note:</strong> scientific record search uses the public NCBI service. Sequence analysis is not run yet.</p>
   </div>
   <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="cell"><div class="cell-core"></div><div class="cell-dot dot-a"></div><div class="cell-dot dot-b"></div><div class="cell-dot dot-c"></div><div class="cell-line"></div></div><div class="float-card card-sequence"><span>DNA / RNA</span><b>ATG · CCA · GTT</b><small>Sequences</small></div><div class="float-card card-data"><span class="mini-icon">⌘</span><b>Scientific data</b><small>Links to original sources</small></div></div>
 </section>
 
 <section class="section" id="organisms">
-  <div class="section-heading"><div><div class="eyebrow">Open database</div><h2>Organism search</h2></div><span class="section-tag">No registration required</span></div>
+  <div class="section-heading"><div><div class="eyebrow">01 / DISCOVER</div><h2>Explore organisms</h2></div><span class="section-tag">No registration required</span></div>
   <form class="search-panel" id="organismSearch">
     <label for="organismQuery">Scientific name, common name, or group</label>
     <div class="search-row"><input id="organismQuery" type="search" placeholder="For example, Paramecium caudatum" autocomplete="off" required><button class="button primary" id="searchButton" type="submit">Search NCBI</button></div>
@@ -40,7 +40,7 @@
 </section>
 
 <section class="section sequence-section" id="sequences">
-  <div class="section-heading"><div><div class="eyebrow">Genetic data</div><h2>Working with sequences</h2></div><span class="section-tag">FASTA</span></div>
+  <div class="section-heading"><div><div class="eyebrow">02 / RETRIEVE</div><h2>Molecular data library</h2></div><span class="section-tag">FASTA</span></div>
   <div class="sequence-layout">
     <div class="sequence-copy"><h3>From record to research</h3><p>Future updates will add full sequence viewing, source verification, FASTA downloads, and the ability to send selected data to analysis tools.</p><ul class="check-list"><li>DNA and RNA from open databases</li><li>View scientific descriptions and accession numbers</li><li>Prepare a sequence for comparison</li><li>Open the original source</li></ul></div>
     <div class="sequence-preview"><div class="preview-head"><span class="file-icon">≋</span><div><b>FASTA file check</b><small>Locally in your browser</small></div><span class="pill">FASTA</span></div><label for="fastaFile">Choose a FASTA file</label><input id="fastaFile" type="file" accept=".fa,.fasta,.fna,.ffn,.faa,.frn,.txt"><div id="fastaStatus" class="fasta-status" aria-live="polite">No file selected. The file is not uploaded to a server.</div><button class="button secondary full" id="inspectFasta" type="button">Check file</button><pre id="fastaPreview" hidden></pre><p class="preview-warning">Format checking is not scientific analysis. Your file stays in your browser.</p></div>
@@ -50,7 +50,7 @@
 
 <section class="section" id="record-explorer">
   <div class="section-heading">
-    <div><p class="eyebrow">RESEARCH LIBRARY</p><h2>Explore scientific records</h2>
+    <div><p class="eyebrow">RESEARCH LIBRARY</p><h2>Genes, proteins & literature</h2>
       <p class="muted">Search genes, proteins, nucleotide records, and scientific literature. Open record details inside ProtistCloud.</p></div>
   </div>
   <form id="record-search-form" class="search-form">
@@ -72,7 +72,7 @@
 </section>
 <section class="section" id="image-explorer">
   <div class="section-heading">
-    <div><p class="eyebrow">VISUAL REFERENCES</p><h2>Find organism images</h2>
+    <div><p class="eyebrow">VISUAL REFERENCES</p><h2>Scientific image library</h2>
       <p class="muted">Search Wikimedia Commons for microscopy images and illustrations. Each result includes its source and license information when available.</p></div>
   </div>
   <form id="image-search-form" class="search-form">
@@ -86,7 +86,7 @@
   <div id="image-search-results" class="image-grid"></div>
 </section>
 <section class="section analysis-section" id="analysis">
-  <div class="section-heading"><div><div class="eyebrow">Workspace</div><h2>Prepare a new analysis</h2></div><span class="section-tag">Computations are disabled</span></div>
+  <div class="section-heading"><div><div class="eyebrow">Workspace</div><h2>Prepare a future analysis</h2></div><span class="section-tag">Analysis requires your approval</span></div>
   <form class="analysis-form" id="analysisForm">
     <div class="form-intro"><span class="step-number">01</span><div><h3>Provide input data</h3><p>Choose one of three methods. No data is sent anywhere at this stage.</p></div></div>
     <div class="input-tabs" role="group" aria-label="Input method"><button type="button" class="tab active" data-tab="paste">Paste a sequence</button><button type="button" class="tab" data-tab="file">Choose a FASTA file</button><button type="button" class="tab" data-tab="accession">Scientific record accession</button></div>
@@ -100,7 +100,7 @@
 </section>
 <section class="feature-row"><div><span class="feature-icon">↗</span><b>Open access</b><p>No account required</p></div><div><span class="feature-icon">⌕</span><b>Scientific sources</b><p>Links to primary records</p></div><div><span class="feature-icon">◷</span><b>Clear limitations</b><p>Clear status messages and warnings</p></div></section>
 </main>
-<footer><a class="brand footer-brand" href="#"><span class="brand-mark">P</span><span>ProtistCloud<small>Project in development</small></span></a><p>Open scientific records are provided by external sources. ProtistCloud is not an official NCBI service.</p><span>© ProtistCloud · First working version</span></footer>
+<footer><a class="brand footer-brand" href="#"><span class="brand-mark">P</span><span>ProtistCloud<small>Project in development</small></span></a><p>Open scientific records are provided by external sources. ProtistCloud is not an official NCBI service.</p><span>© ProtistCloud · Open research workspace</span></footer>
 <script src="script.js"></script>
 
 <script>
