@@ -25,9 +25,48 @@
     <a class="nav-item" href="#library"><span>▱</span>My library</a>
     <a class="nav-item" href="#library"><span>☆</span>Saved items <span class="nav-count" id="navCount">0</span></a>
   </nav>
-  <div class="sidebar-foot"><strong>ProtistCloud</strong><span>Version 0.6 · Preview</span></div>
+  <div class="sidebar-foot"><strong>ProtistCloud</strong><span>Version 0.7 · Dashboard</span></div>
 </aside>
 <main id="home" class="main-content">
+  <section class="home-dashboard" aria-label="ProtistCloud home dashboard">
+    <div class="home-hero">
+      <div class="home-hero-copy">
+        <h1>Explore the world<br>of protists</h1>
+        <p>Search and explore organisms, genes, sequences,<br class="desktop-break"> publications and images from trusted scientific sources.</p>
+      </div>
+      <div class="hero-cell-art" aria-hidden="true"><span class="cell-glow"></span><span class="cell-core"></span><i class="bubble bubble-a"></i><i class="bubble bubble-b"></i><i class="bubble bubble-c"></i><i class="bubble bubble-d"></i></div>
+    </div>
+    <form id="homeSearchForm" class="home-search">
+      <span class="search-glass" aria-hidden="true">⌕</span>
+      <input id="homeSearchQuery" placeholder="Search organisms, genes, proteins, sequences, publications..." aria-label="Search all scientific sources">
+      <button type="submit">Search</button>
+    </form>
+    <div class="search-categories home-filters" role="group" aria-label="Search type">
+      <button class="filter active" data-target="all">All</button><button class="filter" data-target="organisms">Organisms</button><button class="filter" data-target="molecular">Genes</button><button class="filter" data-target="proteins">Proteins</button><button class="filter" data-target="literature">Publications</button><button class="filter" data-target="images">Images</button>
+    </div>
+    <section class="home-category-section">
+      <h2>Explore by category</h2>
+      <div class="home-category-grid">
+        <a href="#organism-search" class="home-category-card"><span class="home-category-icon mint">♧</span><strong>Organisms</strong><p>Browse and explore protist species, taxonomy, images and general information.</p><span class="home-arrow">→</span></a>
+        <a href="#molecular" class="home-category-card"><span class="home-category-icon lilac">♬</span><strong>Genes &amp; Sequences</strong><p>Find genes, nucleotide and protein sequences with detailed annotations.</p><span class="home-arrow">→</span></a>
+        <a href="#literature" class="home-category-card"><span class="home-category-icon sky">▤</span><strong>Publications</strong><p>Search scientific literature from PubMed and other sources.</p><span class="home-arrow">→</span></a>
+        <a href="#images" class="home-category-card"><span class="home-category-icon rose">▧</span><strong>Images</strong><p>Explore microscopic images and illustrations from trusted repositories.</p><span class="home-arrow">→</span></a>
+      </div>
+    </section>
+    <section class="featured-section">
+      <div class="home-section-heading"><h2>Featured organisms</h2><a href="#organism-search">View all</a></div>
+      <div class="featured-grid">
+        <a class="featured-card" href="#organism-search" data-feature-query="Paramecium caudatum"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Paramecium.jpg/480px-Paramecium.jpg" alt="Paramecium microscopy" loading="lazy"><span><strong>Paramecium caudatum</strong><small>Ciliophora</small></span></a>
+        <a class="featured-card" href="#organism-search" data-feature-query="Euglena gracilis"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Euglena.jpg/480px-Euglena.jpg" alt="Euglena microscopy" loading="lazy"><span><strong>Euglena gracilis</strong><small>Euglenozoa</small></span></a>
+        <a class="featured-card" href="#organism-search" data-feature-query="Navicula"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Navicula_diatom.jpg/480px-Navicula_diatom.jpg" alt="Navicula diatom" loading="lazy"><span><strong>Navicula sp.</strong><small>Bacillariophyta</small></span></a>
+        <a class="featured-card" href="#organism-search" data-feature-query="Amoeba proteus"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Amoeba_proteus.jpg/480px-Amoeba_proteus.jpg" alt="Amoeba proteus microscopy" loading="lazy"><span><strong>Amoeba proteus</strong><small>Amoebozoa</small></span></a>
+      </div>
+    </section>
+    <section class="updates-section">
+      <h2>Latest updates</h2>
+      <div class="update-list"><a href="#molecular"><span class="update-icon mint">♧</span><span>New sequence available: <b>18S rRNA</b> <small>(Paramecium caudatum)</small></span><small>Public databases ↗</small></a><a href="#literature"><span class="update-icon lilac">▤</span><span>Explore recent protist biodiversity publications</span><small>PubMed ↗</small></a></div>
+    </section>
+  </section>
   <section class="welcome">
     <div class="welcome-copy"><div class="kicker">OPEN SCIENCE WORKSPACE</div><h1>Explore the world<br>of protists.</h1><p>Search organisms, molecular records and scientific literature from public research sources.</p></div>
     <div class="orb-art" aria-hidden="true"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orb orb-three"></div><div class="orb-cell"><i></i><b></b></div></div>
@@ -77,6 +116,11 @@
   </section>
   <footer class="footer"><span>ProtistCloud · Independent open-science workspace</span><span><a href="https://www.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">NCBI</a><a href="https://www.gbif.org/" target="_blank" rel="noopener">GBIF</a><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed</a><a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a></span></footer>
 </main>
+  <aside class="right-rail" aria-label="Dashboard utilities">
+    <section class="rail-card"><div class="rail-heading"><h2><span>◷</span>Recent searches</h2><button type="button" class="rail-link" id="clearRecent">Clear</button></div><div id="recentSearches" class="recent-list"><p class="rail-empty">Your recent searches will appear here.</p></div></section>
+    <section class="rail-card"><div class="rail-heading"><h2><span>↗</span>Quick links</h2></div><div class="quick-links"><a href="https://www.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">NCBI <span>›</span></a><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed <span>›</span></a><a href="https://www.ensembl.org/" target="_blank" rel="noopener">Ensembl <span>›</span></a><a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons <span>›</span></a><a href="https://www.ebi.ac.uk/ena" target="_blank" rel="noopener">ENA <span>›</span></a></div></section>
+    <section class="rail-card"><div class="rail-heading"><h2><span>♧</span>Saved items</h2><a class="rail-link" href="#library">View all</a></div><div id="railSavedItems" class="rail-saved"><p class="rail-empty">Saved records appear here.</p></div></section>
+  </aside>
 </div>
 <div id="toast" role="status" aria-live="polite" class="toast"></div>
 <script src="script.js"></script>
