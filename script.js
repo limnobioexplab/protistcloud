@@ -131,3 +131,154 @@ $('analysisForm').addEventListener('submit', event => {
   status.hidden = false;
   status.textContent = ready ? 'Fields are complete. Settings are shown for preview only: no data was sent and no scientific analysis was run.' : 'Add a sequence, choose a file, or enter an accession number. No analysis was run.';
 });
+
+
+/* ProtistCloud expanded record and image explorer.
+   These are database retrieval and display features only; no BLAST or other analysis is run. */
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const escHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const NCBI = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+  const status = (id, text) => { const node = $(id); if (node) node.textContent = text; };
+  const dbNames = {gene:'Gene', protein:'Protein', nucleotide:'Nucleotide sequence', pubmed:'Publication'};
+  const dbLinks = {gene:'gene', protein:'protein', nucleotide:'nuccore', pubmed:'pubmed'};
+  async function ncbiSearch(db, term) {
+    const searchDb = dbLinks[db];
+    const u = `${NCBI}esearch.fcgi?db=${encodeURIComponent(searchDb)}&term=${encodeURIComponent(term)}&retmode=json&retmax=30`;
+    const r = await fetch(u);
+    if (!r.ok) throw new Error(`NCBI returned HTTP ${r.status}`);
+    const j = await r.json();
+    return j.esearchresult?.idlist || [];
+  }
+  async function ncbiSummaries(db, ids) {
+    if (!ids.length) return [];
+    const u = `${NCBI}esummary.fcgi?db=${encodeURIComponent(dbLinks[db])}&id=${ids.join(',')}&retmode=json`;
+    const r = await fetch(u);
+    if (!r.ok) throw new Error(`NCBI returned HTTP ${r.status}`);
+    const j = await r.json();
+    return ids.map(id => j.result?.[id]).filter(Boolean);
+  }
+  function recordTitle(rec, db) {
+    if (db === 'gene') return rec.name || rec.description || `Gene ${rec.uid || ''}`;
+    if (db === 'protein' || db === 'nucleotide') return rec.title || rec.caption || `Record ${rec.uid || ''}`;
+    return rec.title || 'Untitled publication';
+  }
+  function recordAcc(rec, db) {
+    return rec.accessionversion || rec.caption || rec.uid || rec.id || '';
+  }
+  function recordUrl(rec, db) {
+    const id = encodeURIComponent(recordAcc(rec, db) || rec.uid || '');
+    return `https://www.ncbi.nlm.nih.gov/${dbLinks[db]}/${id}/`;
+  }
+  const recordCache = new Map();
+  const resultRoot = $('record-search-results');
+  const detailRoot = $('record-detail');
+  if ($('record-search-form')) {
+    $('record-search-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const term = $('record-query').value.trim();
+      const db = $('record-database').value;
+      if (!term) return;
+      resultRoot.innerHTML = '';
+      detailRoot.hidden = true;
+      status('record-search-status', 'Searching NCBI for public records…');
+      try {
+        const ids = await ncbiSearch(db, term);
+        const records = await ncbiSummaries(db, ids);
+        records.forEach((rec) => recordCache.set(`${db}:${rec.uid}`, {rec, db}));
+        if (!records.length) { status('record-search-status', 'No records found. Try a broader term, gene symbol, or accession.'); return; }
+        status('record-search-status', `${records.length} records found. Select a record to view details here.`);
+        resultRoot.innerHTML = records.map((rec) => {
+          const title = recordTitle(rec, db);
+          const acc = recordAcc(rec, db);
+          const uid = rec.uid || '';
+          return `<article class="record-card"><p class="record-meta">${escHtml(dbNames[db])} · ${escHtml(acc)}</p><h3>${escHtml(title)}</h3><p class="record-meta">${escHtml(rec.organism || rec.source || rec.pubdate || '')}</p><div class="record-actions"><button type="button" data-view-record="${escHtml(db)}:${escHtml(uid)}">View inside ProtistCloud</button><a href="${recordUrl(rec, db)}" target="_blank" rel="noopener noreferrer">Original source ↗</a></div></article>`;
+        }).join('');
+      } catch (err) {
+        status('record-search-status', `Could not retrieve records: ${err.message}. Please retry later.`);
+      }
+    });
+    resultRoot.addEventListener('click', async (event) => {
+      const btn = event.target.closest('[data-view-record]');
+      if (!btn) return;
+      const key = btn.getAttribute('data-view-record');
+      const item = recordCache.get(key);
+      if (!item) return;
+      const {rec, db} = item;
+      detailRoot.hidden = false;
+      detailRoot.innerHTML = `<p class="eyebrow">PROTISTCLOUD RECORD VIEW</p><h2>${escHtml(recordTitle(rec, db))}</h2><p class="record-meta">${escHtml(dbNames[db])} · ${escHtml(recordAcc(rec, db))}</p><div id="record-full-detail">Loading record details…</div><div class="record-actions"><a href="${recordUrl(rec, db)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a><button type="button" id="save-record">Save record on this device</button><button type="button" id="download-record">Download record JSON</button></div><p class="record-meta">Saved records are stored only in this browser on this device. This does not create a shared server library.</p>`;
+      detailRoot.scrollIntoView({behavior:'smooth', block:'start'});
+      $('save-record').addEventListener('click', () => {
+        try {
+          const keyName = 'protistcloud-saved-records-v1';
+          const old = JSON.parse(localStorage.getItem(keyName) || '[]');
+          const id = `${db}:${recordAcc(rec, db)}`;
+          const next = [ {id, database:db, savedAt:new Date().toISOString(), record:rec}, ...old.filter(x => x.id !== id) ].slice(0,200);
+          localStorage.setItem(keyName, JSON.stringify(next));
+          $('save-record').textContent = 'Saved on this device ✓';
+        } catch { $('save-record').textContent = 'Could not save in this browser'; }
+      });
+      $('download-record').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify({database:db, record:rec, retrievedAt:new Date().toISOString(), source:'NCBI'}, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `protistcloud-${db}-${recordAcc(rec,db)||'record'}.json`; a.click(); URL.revokeObjectURL(url);
+      });
+      try {
+        const params = new URLSearchParams({db:dbLinks[db], id:recordAcc(rec,db) || rec.uid, retmode:'text'});
+        if (db === 'nucleotide' || db === 'protein') params.set('rettype', 'fasta');
+        const r = await fetch(`${NCBI}efetch.fcgi?${params.toString()}`);
+        const body = await r.text();
+        const full = $('record-full-detail');
+        if (r.ok && body && !body.trim().startsWith('<')) {
+          full.innerHTML = `<h3>${db === 'nucleotide' || db === 'protein' ? 'Sequence (FASTA)' : 'Record text'}</h3><pre class="record-sequence">${escHtml(body.slice(0,120000))}</pre><div class="record-actions"><button type="button" id="copy-sequence">Copy content</button><button type="button" id="download-sequence">Download text</button></div>`;
+          $('copy-sequence').addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText(body); $('copy-sequence').textContent = 'Copied ✓'; }
+            catch { $('copy-sequence').textContent = 'Clipboard unavailable'; }
+          });
+          $('download-sequence').addEventListener('click', () => {
+            const blob = new Blob([body], {type:'text/plain;charset=utf-8'});
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download=`${recordAcc(rec,db)||'record'}.txt`; a.click(); URL.revokeObjectURL(url);
+          });
+        } else {
+          full.innerHTML = `<p>Summary details are shown above. The full text format is not available through this view for this record type.</p><pre class="record-sequence">${escHtml(JSON.stringify(rec,null,2))}</pre>`;
+        }
+      } catch {
+        $('record-full-detail').innerHTML = `<p>Could not load full record content right now. You can still save the summary or download its JSON.</p><pre class="record-sequence">${escHtml(JSON.stringify(rec,null,2))}</pre>`;
+      }
+    });
+  }
+
+  if ($('image-search-form')) {
+    $('image-search-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const term = $('image-query').value.trim();
+      const target = $('image-search-results');
+      if (!term) return;
+      target.innerHTML = '';
+      status('image-search-status', 'Searching Wikimedia Commons…');
+      try {
+        const api = 'https://commons.wikimedia.org/w/api.php';
+        const params = new URLSearchParams({action:'query',format:'json',origin:'*',generator:'search',gsrsearch:`filetype:bitmap ${term}`,gsrnamespace:'6',gsrlimit:'18',prop:'imageinfo',iiprop:'url|extmetadata',iiurlwidth:'600'});
+        const r = await fetch(`${api}?${params.toString()}`);
+        if (!r.ok) throw new Error(`Wikimedia returned HTTP ${r.status}`);
+        const j = await r.json();
+        const pages = Object.values(j.query?.pages || {});
+        if (!pages.length) { status('image-search-status', 'No images found. Try the scientific name or a shorter query.'); return; }
+        target.innerHTML = pages.map(page => {
+          const info = page.imageinfo?.[0] || {};
+          const meta = info.extmetadata || {};
+          const value = (k) => meta[k]?.value ? String(meta[k].value).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim() : '';
+          const author = value('Artist') || 'Author not specified';
+          const license = value('LicenseShortName') || 'Check file license';
+          const description = value('ImageDescription') || page.title;
+          const thumb = info.thumburl || info.url || '';
+          const fileUrl = info.descriptionurl || `https://commons.wikimedia.org/wiki/${encodeURIComponent(page.title.replace(/ /g,'_'))}`;
+          return `<article class="image-card"><a href="${escHtml(fileUrl)}" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="${escHtml(thumb)}" alt="${escHtml(page.title)}"></a><h3>${escHtml(page.title.replace(/^File:/,''))}</h3><p>${escHtml(description).slice(0,260)}</p><p class="record-meta">Author: ${escHtml(author)}<br>License: ${escHtml(license)}</p><div class="record-actions"><a href="${escHtml(fileUrl)}" target="_blank" rel="noopener noreferrer">Source and license ↗</a></div></article>`;
+        }).join('');
+        status('image-search-status', `${pages.length} image results retrieved. Review each source page for attribution and reuse terms.`);
+      } catch (err) {
+        status('image-search-status', `Could not retrieve images: ${err.message}. Wikimedia may be temporarily unavailable.`);
+      }
+    });
+  }
+})();

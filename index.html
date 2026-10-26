@@ -47,6 +47,44 @@
   </div>
 </section>
 
+
+<section class="section" id="record-explorer">
+  <div class="section-heading">
+    <div><p class="eyebrow">RESEARCH LIBRARY</p><h2>Explore scientific records</h2>
+      <p class="muted">Search genes, proteins, nucleotide records, and scientific literature. Open record details inside ProtistCloud.</p></div>
+  </div>
+  <form id="record-search-form" class="search-form">
+    <label for="record-query">Search term, gene name, accession, or organism</label>
+    <div class="search-row">
+      <input id="record-query" type="search" placeholder="e.g. Paramecium caudatum, COI, 18S rRNA, XP_..." required>
+      <select id="record-database" aria-label="Scientific database">
+        <option value="gene">Genes</option>
+        <option value="protein">Proteins</option>
+        <option value="nucleotide" selected>Nucleotide sequences</option>
+        <option value="pubmed">Publications (PubMed)</option>
+      </select>
+      <button type="submit" class="button button-primary">Search records</button>
+    </div>
+  </form>
+  <p id="record-search-status" class="status" aria-live="polite">Choose a database and search to browse public records.</p>
+  <div id="record-search-results" class="record-grid"></div>
+  <div id="record-detail" class="record-detail" hidden></div>
+</section>
+<section class="section" id="image-explorer">
+  <div class="section-heading">
+    <div><p class="eyebrow">VISUAL REFERENCES</p><h2>Find organism images</h2>
+      <p class="muted">Search Wikimedia Commons for microscopy images and illustrations. Each result includes its source and license information when available.</p></div>
+  </div>
+  <form id="image-search-form" class="search-form">
+    <label for="image-query">Organism or scientific name</label>
+    <div class="search-row">
+      <input id="image-query" type="search" placeholder="e.g. Amoeba proteus" required>
+      <button type="submit" class="button button-primary">Search images</button>
+    </div>
+  </form>
+  <p id="image-search-status" class="status" aria-live="polite">Images are retrieved from Wikimedia Commons. License and attribution details vary by file.</p>
+  <div id="image-search-results" class="image-grid"></div>
+</section>
 <section class="section analysis-section" id="analysis">
   <div class="section-heading"><div><div class="eyebrow">Workspace</div><h2>Prepare a new analysis</h2></div><span class="section-tag">Computations are disabled</span></div>
   <form class="analysis-form" id="analysisForm">
@@ -64,4 +102,8 @@
 </main>
 <footer><a class="brand footer-brand" href="#"><span class="brand-mark">P</span><span>ProtistCloud<small>Project in development</small></span></a><p>Open scientific records are provided by external sources. ProtistCloud is not an official NCBI service.</p><span>© ProtistCloud · First working version</span></footer>
 <script src="script.js"></script>
+
+<script>
+/* ProtistCloud record explorer additions are implemented in script.js. */
+</script>
 </body></html>
